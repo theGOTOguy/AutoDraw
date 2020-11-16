@@ -127,6 +127,70 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
       else:
         break
 
+    # Up-Left
+    ty = cy
+    tx = cx
+    current_score = 0
+    while ty > -1 and tx > -1:
+      if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+        if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "UP-LEFT"
+        ty -= 1
+        tx -= 1
+      else:
+        break
+
+    # Down-Left
+    ty = cy
+    tx = cx
+    current_score = 0
+    while ty < args.dots_vertical and tx > -1:
+      if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+        if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "DOWN-LEFT"
+        ty += 1
+        tx -= 1
+      else:
+        break
+
+    # Up-Right
+    ty = cy
+    tx = cx
+    current_score = 0
+    while ty > -1 and tx < args.dots_horizontal:
+      if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+        if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "UP-RIGHT"
+        ty -= 1
+        tx += 1
+      else:
+        break
+
+    # Down-Right 
+    ty = cy
+    tx = cx
+    current_score = 0
+    while ty < args.dots_vertical and tx < args.dots_horizontal:
+      if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+        if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "UP-RIGHT"
+        ty += 1
+        tx += 1
+      else:
+        break
+
     # See if we have painted ourselves into a corner.
     if not best_direction:
       break
@@ -171,6 +235,60 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
             end = {'x': cx, 'y': ty}
         else:
           break
+
+    elif best_direction == 'UP-LEFT':
+      ty = cy
+      tx = cx
+      while ty > -1 and tx > -1:
+        if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+          if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+            has_been_colored[tx][ty] = True
+            end = {'x': tx, 'y': ty}
+          ty -= 1
+          tx -= 1
+        else:
+          break
+
+    elif best_direction == 'UP-RIGHT':
+      ty = cy
+      tx = cx
+      while ty > -1 and tx < args.dots_horizontal:
+        if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+          if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+            has_been_colored[tx][ty] = True
+            end = {'x': tx, 'y': ty}
+          ty -= 1
+          tx += 1
+        else:
+          break
+
+    elif best_direction == 'DOWN-LEFT':
+      ty = cy
+      tx = cx
+      while ty < args.dots_vertical and tx > -1:
+        if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+          if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+            has_been_colored[tx][ty] = True
+            end = {'x': tx, 'y': ty}
+          ty += 1
+          tx -= 1
+        else:
+          break
+
+    elif best_direction == 'DOWN-RIGHT':
+      ty = cy
+      tx = cx
+      while ty < args.dots_vertical and tx < args.dots_horizontal:
+        if color_map[tx][ty] == color or not has_been_colored[tx][ty]:
+          if color_map[tx][ty] == color and not has_been_colored[tx][ty]:
+            has_been_colored[tx][ty] = True
+            end = {'x': tx, 'y': ty}
+          ty += 1
+          tx += 1
+        else:
+          break
+
+
 
     pyautogui.moveTo(
         top_left_draw.x + (bottom_right_draw.x - top_left_draw.x) * (float(end['x']) / float(args.dots_horizontal)),
