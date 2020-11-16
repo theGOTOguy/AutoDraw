@@ -76,49 +76,63 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
     # go that colors the most of what needs to be colored along the way, then go that way.
     # If nothing can be done, then we break.
     num_moves += 1
-    best_up_score = 0
-    best_down_score = 0
-    best_left_score = 0
-    best_right_score = 0
 
+    best_score = 0
+    current_score = 0
+    best_direction = ""
     # Up
     for ty in range(cy, -1, -1):
       if color_map[cx][ty] == color or not has_been_colored[cx][ty]:
         if color_map[cx][ty] == color and not has_been_colored[cx][ty]:
-          best_up_score += 1
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "UP"
       else:
         break
 
     # Down
+    current_score = 0
     for ty in range(cy, args.dots_vertical):
       if color_map[cx][ty] == color or not has_been_colored[cx][ty]:
         if color_map[cx][ty] == color and not has_been_colored[cx][ty]:
-          best_down_score += 1
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "DOWN"
       else:
         break
 
     # Left
+    current_score = 0
     for tx in range(cx, -1, -1):
       if color_map[tx][cy] == color or not has_been_colored[tx][cy]:
         if color_map[tx][cy] == color and not has_been_colored[tx][cy]:
-          best_left_score += 1
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "LEFT"
       else:
         break
 
     # Right 
+    current_score = 0
     for tx in range(cx, args.dots_horizontal):
       if color_map[tx][cy] == color or not has_been_colored[tx][cy]:
         if color_map[tx][cy] == color and not has_been_colored[tx][cy]:
-          best_right_score += 1
+          current_score += 1
+          if current_score > best_score:
+            best_score = current_score
+            best_direction = "RIGHT"
       else:
         break
 
     # See if we have painted ourselves into a corner.
-    if not best_up_score and not best_down_score and not best_left_score and not best_right_score:
+    if not best_direction:
       break
 
     # Otherwise, let's see which one is the biggest.
-    if best_left_score >= best_right_score and best_left_score >= best_up_score and best_left_score >= best_down_score:
+    if best_direction == 'LEFT':
       # Left
       for tx in range(cx, -1, -1):
         if color_map[tx][cy] == color or not has_been_colored[tx][cy]:
@@ -128,7 +142,7 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
         else:
           break
 
-    elif best_right_score >= best_up_score and best_right_score >= best_down_score:
+    elif best_direction == 'RIGHT':
       # Right
       for tx in range(cx, args.dots_horizontal):
         if color_map[tx][cy] == color or not has_been_colored[tx][cy]:
@@ -138,7 +152,7 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
         else:
           break
 
-    elif best_up_score >= best_down_score:
+    elif best_direction == 'UP':
       # Up
       for ty in range(cy, -1, -1):
         if color_map[cx][ty] == color or not has_been_colored[cx][ty]:
@@ -148,7 +162,7 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
         else:
           break
 
-    else:
+    elif best_direction == 'DOWN':
       # Down
       for ty in range(cy, args.dots_vertical):
         if color_map[cx][ty] == color or not has_been_colored[cx][ty]:
