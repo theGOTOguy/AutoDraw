@@ -185,7 +185,7 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
           current_score += 1
           if current_score > best_score:
             best_score = current_score
-            best_direction = "UP-RIGHT"
+            best_direction = "DOWN-RIGHT"
         ty += 1
         tx += 1
       else:
@@ -287,8 +287,6 @@ def perform_best_area_draw(color, x, y, top_left_draw, bottom_right_draw, color_
           tx += 1
         else:
           break
-
-
 
     pyautogui.moveTo(
         top_left_draw.x + (bottom_right_draw.x - top_left_draw.x) * (float(end['x']) / float(args.dots_horizontal)),
