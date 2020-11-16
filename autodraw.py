@@ -222,6 +222,10 @@ if __name__ == "__main__":
   choice_by_position = [["" for _ in range(args.dots_vertical)] for _ in range(args.dots_horizontal)]
   has_been_drawn_by_position = [[False for _ in range(args.dots_vertical)] for _ in range(args.dots_horizontal)]
 
+  # Count the number of "pixels" of each color.
+  # We will color in reverse order of how common the color is.
+  count_by_color = {color: 0 for color in color_map}
+
   for x in range(args.dots_horizontal):
     for y in range(args.dots_vertical):
       pixel_rgb = img.getpixel((x, y))
@@ -235,11 +239,13 @@ if __name__ == "__main__":
         if nearest_distance is None or test_distance < nearest_distance:
           nearest_distance = test_distance
           choice_by_position[x][y] = test_color
+          count_by_color[test_color] += 1
 
   print("Now drawing.")
   # Actually Draw.
-  for color, location in color_map.items():
+  for color, _ in reversed(sorted(count_by_color.items(), key=lambda kv: kv[1])):
     print("Drawing {}".format(color))
+    location = color_map[color] 
     # Select the color in question.
     pyautogui.moveTo(color_palette.x, color_palette.y)
     time.sleep(args.click_pause)
